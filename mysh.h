@@ -10,9 +10,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 
 typedef unsigned char boolean;
+typedef char * string;
 
 
 #endif /* MYSH_H_ */
