@@ -16,6 +16,12 @@ OUTPUT = mysh
 # target rules
 mysh: $(OFILES)
 	$(CC) $(CFLAGS) $(OFILES) -o $(OUTPUT)
+	
+compile: $(OFILES)
+	$(CC) $(CFLAGS) $(OFILES) -o $(OUTPUT)
+
+all: $(OFILES)
+	$(CC) $(CFLAGS) $(OFILES) -o $(OUTPUT)
 
 clean: 
 	rm *~ *.o *.stackdump mysh
