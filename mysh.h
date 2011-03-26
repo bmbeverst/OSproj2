@@ -14,7 +14,7 @@
 #include <sys/wait.h>
 
 
-typedef unsigned char boolean;
+typedef unsigned int boolean;
 typedef char * string;
 
 
