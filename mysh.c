@@ -135,9 +135,11 @@ int main(int argc, char **argv)
 		}
 
 
-		redirStdIn = 0;
-		if(redirStdOut) {
-			close(redirStdOut);
+		if(redirStdIn) {
+			close(new_stdout);
+			redirStdIn = 0;
+		} else if(redirStdOut) {
+			close(new_stdout);
 			redirStdOut = 0;
 		}
 		redirStdError = 0;
