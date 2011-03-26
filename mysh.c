@@ -10,8 +10,7 @@
 int lengthArgs = 100;
 int sizeArgs = 10;
 string args[10];// can't use sizeArgs because of error.
-pid_t pid;
-string binaryPath;
+pid_t pid = 1;
 
 int main(int argc, char **argv) {
 	// initialize variables
@@ -22,9 +21,14 @@ int main(int argc, char **argv) {
 	home = getenv("HOME");
 
 	boolean run = 1;
+	boolean redirStdIn = 0;
+	boolean redirStdOut = 0;
+	boolean redirStdError = 0;
+	boolean background = 0;
 	int sizeInput = 256;
-	int index;
+	int index = 0;
 	string input = malloc(sizeof(char*)*sizeInput);
+
 	for(index = 0; index < sizeArgs; index++) {
 		args[index] = malloc(sizeof(char*)*sizeInput);
 	}
@@ -34,14 +38,7 @@ int main(int argc, char **argv) {
 		promt = envPromt;
 	}
 
-	//	pid = vfork();
-	//	if (pid == 0) {
-	//
-	//		fprintf(stdout, "FORKED");
-	//		//if (execvp(args[0], args) == -1) {
-	//			// Error logic
-	//		//}
-	//	} forks forever.
+
 	while (run) {
 
 		fprintf(stdout, "%s", promt);
@@ -66,21 +63,58 @@ int main(int argc, char **argv) {
 			} else if(strcmp(args[0], "cwd") == 0) {
 				getcwd(input, sizeInput);
 				fprintf(stdout, "%s\n", input);
-			} else if(0) {
-
 			} else {
-				string temp = binaryPath;
-				strcat(binaryPath, args[0]);
-				FILE *filep = fopen(temp, "r");
-				if(ferror(filep) || filep == NULL)
-				{
-					fprintf(stderr, "Cannot open file: %s\n", argv[1]);
-					exit(1);
+
+				fprintf(stdout, "\n");
+				pid = vfork();
+			}
+		}
+		if (pid == 0) {//TODO need to pharse args to remove redirection, and background.
+			if (execvp(args[0], args) == -1) {
+				_exit(1);
+			}
+
+			for(index = 0; index < sizeArgs; index++) {
+
+				if (args[index] != NULL) {
+					if(args[index][0] == '<') {
+
+					}
+					switch(args[index][0]) {
+
+					case '<':
+						redirStdIn = 1;
+						break;
+
+					case '>':
+						redirStdOut = 1;
+						break;
+
+					case '2':
+						if(args[index][1] == '>') {
+							redirStdError = 1;
+						}
+						break;
+					}
 				}
 			}
 		}
+		for (index = 0; index < sizeArgs; ++index) {
+			if (args[index] != NULL && strcmp(args[index], "&")) {
+				background = 1;
+			}
+		}
 
+
+		redirStdIn = 0;
+		redirStdOut = 0;
+		redirStdError = 0;
+		background = 0;
 	}
 
+	for (index = 0; index < sizeArgs; ++index) {
+		free(args[index]);
+	}
+	free(input);
 	return 0;
 }
