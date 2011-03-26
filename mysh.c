@@ -11,6 +11,12 @@ int lengthArgs = 100;
 int sizeArgs = 10;
 string args[10];// can't use sizeArgs because of error.
 pid_t pid = 1;
+int status;
+
+boolean redirStdIn = 0;
+boolean redirStdOut = 0;
+boolean redirStdError = 0;
+boolean background = 0;
 
 int main(int argc, char **argv) {
 	// initialize variables
@@ -21,10 +27,6 @@ int main(int argc, char **argv) {
 	home = getenv("HOME");
 
 	boolean run = 1;
-	boolean redirStdIn = 0;
-	boolean redirStdOut = 0;
-	boolean redirStdError = 0;
-	boolean background = 0;
 	int sizeInput = 256;
 	int index = 0;
 	string input = malloc(sizeof(char*)*sizeInput);
@@ -48,12 +50,17 @@ int main(int argc, char **argv) {
 		for (index = 1; index < sizeArgs; index++) {
 			args[index] = strtok(NULL, " \n");
 		}
-		//debuging
+		//Debugging
 		for (index = 0; index < 3; index++) {
 			fprintf(stdout, "%s\n", args[index]);
 		}
 		//main shell loop
 		if (args[0] != NULL) {
+			for (index = 0; index < sizeArgs; ++index) {
+				if (args[index] != NULL && strcmp(args[index], "&")) {
+					background = 1;
+				}
+			}
 			//if input is exit stop program
 			if (strcmp(args[0], "quit") == 0) {
 				run = 0;
@@ -72,9 +79,14 @@ int main(int argc, char **argv) {
 
 				fprintf(stdout, "\n");
 				pid = vfork();
+				if(background == 0) {
+					wait(&status);
+				}
 			}
 		}
 		if (pid == 0) {//TODO need to pharse args to remove redirection, and background.
+			//sleep(2);
+			fprintf(stdout, "Child");
 			if (execvp(args[0], args) == -1) {
 				_exit(1);
 			}
@@ -102,11 +114,6 @@ int main(int argc, char **argv) {
 						break;
 					}
 				}
-			}
-		}
-		for (index = 0; index < sizeArgs; ++index) {
-			if (args[index] != NULL && strcmp(args[index], "&")) {
-				background = 1;
 			}
 		}
 
