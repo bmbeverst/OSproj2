@@ -38,28 +38,33 @@ int main(int argc, char **argv) {
 		promt = envPromt;
 	}
 
-
 	while (run) {
 
 		fprintf(stdout, "%s", promt);
 		getline(&input, (size_t *) &sizeInput, stdin);// please the compiler
-		args[0] = strtok(input, " \n");
-
+		//
+		//Tokenize user input
+		args[0] = strtok(input, " \n");// " \n" at the delimiters
 		for (index = 1; index < sizeArgs; index++) {
 			args[index] = strtok(NULL, " \n");
 		}
+		//debuging
 		for (index = 0; index < 3; index++) {
 			fprintf(stdout, "%s\n", args[index]);
 		}
+		//main shell loop
 		if (args[0] != NULL) {
-			if (strcmp(args[0], "exit") == 0) {
+			//if input is exit stop program
+			if (strcmp(args[0], "quit") == 0) {
 				run = 0;
+			// if cd is followed by a path  move to the path else go to home.
+			//TODO check path
 			} else if(strcmp(args[0], "cd") == 0) {
 				if(args[1] != NULL) {
 					chdir(args[1]);
 				} else {
 					chdir(home);
-				}// used to test cd
+				}// used to test cd debug prints current working dir
 			} else if(strcmp(args[0], "cwd") == 0) {
 				getcwd(input, sizeInput);
 				fprintf(stdout, "%s\n", input);
