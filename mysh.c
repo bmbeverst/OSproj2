@@ -12,6 +12,7 @@ int sizeArgs = 10;
 string args[10];// can't use sizeArgs because of error.
 pid_t pid = 1;
 int status;
+int new_stdout;
 
 boolean redirStdIn = 0;
 boolean redirStdOut = 0;
@@ -27,7 +28,7 @@ int main(int argc, char **argv)
 
 	boolean run = 1;
 	int sizeInput = 256;
-	int index = 0, new_stdout;
+	int index = 0;
 	string input = malloc(sizeof(char*)*sizeInput);
 	string filename = malloc(20);
 
